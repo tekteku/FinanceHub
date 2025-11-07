@@ -1,0 +1,57 @@
+﻿<div class="accounts-container">
+  <div class="header">
+    <h1> My Accounts</h1>
+    <button class="btn-primary">+ New Account</button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading accounts...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    <span></span>
+    <p>{{ error }}</p>
+    <button (click)="loadAccounts()">Retry</button>
+  </div>
+
+  <!-- Accounts Summary -->
+  <div *ngIf="!isLoading && !error" class="summary">
+    <div class="summary-card">
+      <h3>Total Balance</h3>
+      <p class="balance">{{ getTotalBalance() | currency:'USD':'symbol':'1.2-2' }}</p>
+    </div>
+    <div class="summary-card">
+      <h3>Total Accounts</h3>
+      <p class="count">{{ accounts.length }}</p>
+    </div>
+  </div>
+
+  <!-- Accounts List -->
+  <div *ngIf="!isLoading && !error && accounts.length > 0" class="accounts-list">
+    <div *ngFor="let account of accounts" class="account-card">
+      <div class="account-header">
+        <h3>{{ account.accountType }}</h3>
+        <span class="status" [class.active]="account.status === 'ACTIVE'">
+          {{ account.status }}
+        </span>
+      </div>
+      <div class="account-details">
+        <p class="account-number">{{ account.accountNumber }}</p>
+        <p class="balance">{{ account.balance | currency:account.currency:'symbol':'1.2-2' }}</p>
+      </div>
+      <div class="account-footer">
+        <small>Created: {{ account.createdAt | date:'short' }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && accounts.length === 0" class="empty-state">
+    <h2> No accounts yet</h2>
+    <p>Create your first account to get started!</p>
+    <button class="btn-primary">Create Account</button>
+  </div>
+</div>

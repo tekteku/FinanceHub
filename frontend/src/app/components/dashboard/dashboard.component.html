@@ -1,0 +1,28 @@
+<div class="dashboard-container">
+  <div class="welcome-section">
+    <h1>💰 FinanceHub</h1>
+    <h2>Welcome, {{currentUser?.fullName || currentUser?.username}}! 👋</h2>
+    <p>{{currentUser?.email}}</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Balance</h3>
+      <p class="amount">$0.00</p>
+    </div>
+    <div class="stat-card">
+      <h3>Accounts</h3>
+      <p class="amount">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Transactions</h3>
+      <p class="amount">0</p>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <button class="btn-primary">+ New Account</button>
+    <button class="btn-secondary">+ New Transaction</button>
+  </div>
+</div>
