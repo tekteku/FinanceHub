@@ -1,0 +1,44 @@
+﻿spring:
+  application:
+    name: financehub-backend
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/financehub
+    username: financehub
+    password: financehub123
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+jwt:
+  secret: YourSuperSecretKeyForJWTTokenGenerationMinimum256BitsLong123456
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+logging:
+  level:
+    com.financehub: DEBUG
+    org.springframework.security: DEBUG

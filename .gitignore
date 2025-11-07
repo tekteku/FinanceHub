@@ -1,0 +1,41 @@
+﻿# Java & Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.DS_Store
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.settings/
+.project
+.classpath
+
+# VSCode
+.vscode/
+
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/*.log
+
+# Environment
+.env
+*.env.local
+
+# Database
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
