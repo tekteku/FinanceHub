@@ -1,0 +1,42 @@
+<aside class="sidenav" [class.collapsed]="isCollapsed">
+  <div class="sidenav-header">
+    <div class="logo">
+      <span class="logo-icon">💼</span>
+      <span class="logo-text" *ngIf="!isCollapsed">FinanceHub</span>
+    </div>
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <span *ngIf="!isCollapsed">◀</span>
+      <span *ngIf="isCollapsed">▶</span>
+    </button>
+  </div>
+
+  <nav class="sidenav-nav">
+    <a
+      *ngFor="let item of menuItems"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      class="nav-item"
+      [title]="item.label"
+    >
+      <span class="nav-icon">{{ item.icon }}</span>
+      <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+      <span class="nav-badge" *ngIf="item.badge && !isCollapsed">{{ item.badge }}</span>
+    </a>
+  </nav>
+
+  <div class="sidenav-footer">
+    <div class="user-info" *ngIf="currentUser$ | async as user">
+      <div class="user-avatar">
+        {{ user.fullName?.charAt(0) || user.username?.charAt(0) || 'U' }}
+      </div>
+      <div class="user-details" *ngIf="!isCollapsed">
+        <div class="user-name">{{ user.fullName || user.username }}</div>
+        <div class="user-email">{{ user.email }}</div>
+      </div>
+    </div>
+    <button class="logout-btn" (click)="logout()" [title]="'Logout'">
+      <span class="logout-icon">🚪</span>
+      <span *ngIf="!isCollapsed">Logout</span>
+    </button>
+  </div>
+</aside>

@@ -1,0 +1,50 @@
+<div class="transaction-list">
+  <div class="loading-state" *ngIf="loading">
+    <div class="skeleton-item" *ngFor="let item of [1,2,3,4,5]"></div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && transactions.length === 0">
+    <div class="empty-icon">📭</div>
+    <p>No transactions found</p>
+    <a routerLink="/transactions" class="btn-link">Add your first transaction</a>
+  </div>
+
+  <div class="transactions" *ngIf="!loading && transactions.length > 0">
+    <div 
+      class="transaction-item"
+      [class]="getTransactionClass(transaction.type)"
+      *ngFor="let transaction of displayTransactions"
+    >
+      <div class="transaction-icon">
+        {{ getTransactionIcon(transaction.type) }}
+      </div>
+      
+      <div class="transaction-details">
+        <div class="transaction-name">
+          {{ transaction.description || 'Unnamed Transaction' }}
+        </div>
+        <div class="transaction-meta">
+          <span class="transaction-date">{{ formatDate(transaction.transactionDate) }}</span>
+          <span class="transaction-account" *ngIf="showAccount && transaction.accountName">
+            • {{ transaction.accountName }}
+          </span>
+        </div>
+      </div>
+
+      <div 
+        class="transaction-amount"
+        [class]="getTransactionClass(transaction.type)"
+      >
+        {{ formatAmount(transaction.amount, transaction.type) }}
+      </div>
+    </div>
+
+    <a 
+      routerLink="/transactions" 
+      class="view-all-link"
+      *ngIf="transactions.length > maxItems"
+    >
+      View all {{ transactions.length }} transactions →
+    </a>
+  </div>
+</div>
