@@ -138,10 +138,6 @@ public class BudgetService {
         budget.setAlertThreshold(request.getAlertThreshold());
         budget.setDescription(request.getDescription());
         
-        if (request.getIsActive() != null) {
-            budget.setIsActive(request.getIsActive());
-        }
-        
         budget = budgetRepository.save(budget);
         budget = updateSpentAmount(budget);
         
@@ -211,14 +207,14 @@ public class BudgetService {
                 .spent(budget.getSpent())
                 .startDate(budget.getStartDate())
                 .endDate(budget.getEndDate())
-                .period(budget.getPeriod().name())
+                .period(budget.getPeriod())
                 .categoryId(budget.getCategory() != null ? budget.getCategory().getId() : null)
                 .categoryName(budget.getCategory() != null ? budget.getCategory().getName() : null)
                 .alertThreshold(budget.getAlertThreshold())
                 .isActive(budget.getIsActive())
                 .description(budget.getDescription())
                 .spentPercentage(budget.getSpentPercentage())
-                .alertTriggered(budget.isAlertTriggered())
+                .isAlertTriggered(budget.isAlertTriggered())
                 .createdAt(budget.getCreatedAt())
                 .updatedAt(budget.getUpdatedAt())
                 .build();

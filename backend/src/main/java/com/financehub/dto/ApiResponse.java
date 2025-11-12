@@ -1,6 +1,7 @@
 package com.financehub.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,13 +13,15 @@ import java.time.LocalDateTime;
  * @param <T> The type of data being returned
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
     private boolean success;
     private String message;
     private T data;
-    private LocalDateTime timestamp;
+    @Builder.Default
+    private LocalDateTime timestamp = LocalDateTime.now();
     
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(true, "Success", data, LocalDateTime.now());

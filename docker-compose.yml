@@ -28,9 +28,7 @@
       retries: 5
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     container_name: financehub-backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/financehub
