@@ -1,0 +1,148 @@
+<div class="budgets-container">
+  <div class="budgets-header">
+    <h1>Budgets</h1>
+    <button class="btn btn-primary" (click)="toggleAddForm()">
+      {{ showAddForm ? 'Cancel' : '+ Add Budget' }}
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="budget-form-container" *ngIf="showAddForm">
+    <form [formGroup]="budgetForm" (ngSubmit)="onSubmit()" class="budget-form">
+      <h2>{{ editingBudgetId ? 'Edit Budget' : 'New Budget' }}</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Budget Name *</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="form-control"
+            placeholder="e.g., Monthly Groceries"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="periodType">Period *</label>
+          <select id="periodType" formControlName="periodType" class="form-control">
+            <option *ngFor="let type of periodTypes" [value]="type">
+              {{ getPeriodTypeLabel(type) }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+          rows="3"
+          placeholder="Optional description"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="amount">Budget Amount *</label>
+          <input
+            type="number"
+            id="amount"
+            formControlName="amount"
+            class="form-control"
+            step="0.01"
+            placeholder="0.00"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="categoryId">Category</label>
+          <select id="categoryId" formControlName="categoryId" class="form-control">
+            <option [value]="null">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="toggleAddForm()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="budgetForm.invalid || isLoading">
+          {{ editingBudgetId ? 'Update Budget' : 'Create Budget' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="loading" *ngIf="isLoading && !showAddForm">
+    Loading budgets...
+  </div>
+
+  <div class="budgets-grid" *ngIf="!isLoading">
+    <div class="budget-card" *ngFor="let budget of budgets" [class]="getBudgetStatusClass(budget.status)">
+      <div class="budget-header">
+        <div class="budget-info">
+          <h3>{{ budget.name }}</h3>
+          <span class="budget-period">{{ getPeriodTypeLabel(budget.periodType) }}</span>
+        </div>
+        <div class="budget-actions">
+          <button class="btn-icon" (click)="editBudget(budget)" title="Edit">
+            ✏️
+          </button>
+          <button class="btn-icon" (click)="deleteBudget(budget.id)" title="Delete">
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <div class="budget-description" *ngIf="budget.description">
+        {{ budget.description }}
+      </div>
+
+      <div class="budget-status">
+        <span class="status-icon">{{ getBudgetStatusIcon(budget.status) }}</span>
+        <span class="status-text">{{ budget.status.replace('_', ' ') }}</span>
+      </div>
+
+      <div class="budget-progress">
+        <div class="progress-header">
+          <span class="spent">{{ budget.amountSpent | number:'1.2-2' }}</span>
+          <span class="total">/ {{ budget.amount | number:'1.2-2' }}</span>
+        </div>
+        <div class="progress-bar">
+          <div 
+            class="progress-fill" 
+            [style.width.%]="budget.percentageUsed"
+            [class.warning]="budget.status === 'WARNING'"
+            [class.over]="budget.status === 'OVER_BUDGET'">
+          </div>
+        </div>
+        <div class="progress-percentage">
+          {{ budget.percentageUsed | number:'1.0-0' }}% used
+        </div>
+      </div>
+
+      <div class="budget-remaining" [class.negative]="budget.amountRemaining < 0">
+        <span class="label">Remaining:</span>
+        <span class="amount">{{ budget.amountRemaining | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="budgets.length === 0">
+      <div class="empty-icon">📊</div>
+      <h3>No budgets yet</h3>
+      <p>Create budgets to track your spending limits</p>
+      <button class="btn btn-primary" (click)="toggleAddForm()">
+        + Add Your First Budget
+      </button>
+    </div>
+  </div>
+</div>

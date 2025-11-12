@@ -1,0 +1,85 @@
+.account-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .account-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .account-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: #1976d2;
+    }
+
+    .account-info {
+      flex: 1;
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .account-type {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 16px 0;
+
+    .account-balance {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 12px 0;
+
+      &.positive {
+        color: #4caf50;
+      }
+
+      &.negative {
+        color: #f44336;
+      }
+
+      .currency {
+        font-size: 20px;
+        margin-right: 4px;
+      }
+    }
+
+    .account-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+
+      .label {
+        font-weight: 500;
+      }
+
+      .value {
+        font-family: monospace;
+      }
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0 0;
+  }
+}

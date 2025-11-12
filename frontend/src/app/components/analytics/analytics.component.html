@@ -1,0 +1,164 @@
+<div class="analytics-container">
+  <div class="analytics-header">
+    <h1>Analytics</h1>
+    <form [formGroup]="dateRangeForm" class="date-range-form">
+      <div class="quick-ranges">
+        <button type="button" class="btn-quick" (click)="setQuickRange(7)">Last 7 days</button>
+        <button type="button" class="btn-quick" (click)="setQuickRange(30)">Last 30 days</button>
+        <button type="button" class="btn-quick" (click)="setQuickRange(90)">Last 90 days</button>
+      </div>
+      <div class="date-inputs">
+        <input
+          type="date"
+          formControlName="startDate"
+          class="form-control"
+          (change)="onDateRangeChange()"
+        />
+        <span>to</span>
+        <input
+          type="date"
+          formControlName="endDate"
+          class="form-control"
+          (change)="onDateRangeChange()"
+        />
+      </div>
+    </form>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    Loading analytics...
+  </div>
+
+  <div class="analytics-content" *ngIf="!isLoading">
+    <!-- Financial Summary Cards -->
+    <div class="summary-cards" *ngIf="summary">
+      <div class="summary-card income">
+        <div class="card-icon">💰</div>
+        <div class="card-content">
+          <div class="card-label">Total Income</div>
+          <div class="card-value">{{ summary.totalIncome | number:'1.2-2' }} {{ summary.currency }}</div>
+        </div>
+      </div>
+
+      <div class="summary-card expense">
+        <div class="card-icon">💸</div>
+        <div class="card-content">
+          <div class="card-label">Total Expenses</div>
+          <div class="card-value">{{ summary.totalExpenses | number:'1.2-2' }} {{ summary.currency }}</div>
+        </div>
+      </div>
+
+      <div class="summary-card balance" [class.negative]="summary.balance < 0">
+        <div class="card-icon">💼</div>
+        <div class="card-content">
+          <div class="card-label">Net Balance</div>
+          <div class="card-value">{{ summary.balance | number:'1.2-2' }} {{ summary.currency }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expenses by Category -->
+    <div class="analytics-section" *ngIf="expensesByCategory.length > 0">
+      <h2>Expenses by Category</h2>
+      <div class="category-chart">
+        <div class="category-items">
+          <div class="category-item" *ngFor="let category of expensesByCategory; let i = index">
+            <div class="category-info">
+              <div class="category-color" [style.background-color]="getCategoryColor(i)"></div>
+              <span class="category-name">{{ category.categoryName || 'Uncategorized' }}</span>
+            </div>
+            <div class="category-amount">
+              <span class="amount">{{ category.amount | number:'1.2-2' }}</span>
+              <span class="percentage">({{ getCategoryPercentage(category.amount) | number:'1.0-0' }}%)</span>
+            </div>
+            <div class="category-bar">
+              <div 
+                class="category-bar-fill" 
+                [style.width.%]="getCategoryPercentage(category.amount)"
+                [style.background-color]="getCategoryColor(i)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-chart-visual">
+          <div class="pie-chart">
+            <svg viewBox="0 0 200 200" width="200" height="200">
+              <circle cx="100" cy="100" r="80" fill="#f5f5f5"/>
+              <text x="100" y="100" text-anchor="middle" dy=".3em" class="pie-center-text">
+                Total
+              </text>
+              <text x="100" y="120" text-anchor="middle" class="pie-center-value">
+                {{ getTotalExpensesByCategory() | number:'1.0-0' }}
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Trends -->
+    <div class="analytics-section" *ngIf="monthlyTrends.length > 0">
+      <h2>Monthly Trends</h2>
+      <div class="trends-chart">
+        <div class="trend-bars">
+          <div class="trend-item" *ngFor="let trend of monthlyTrends">
+            <div class="trend-bars-container">
+              <div class="trend-bar income" [style.height.%]="(trend.income / getMaxTrendValue()) * 100" 
+                   [title]="'Income: ' + (trend.income | number:'1.2-2')">
+              </div>
+              <div class="trend-bar expense" [style.height.%]="(trend.expenses / getMaxTrendValue()) * 100"
+                   [title]="'Expenses: ' + (trend.expenses | number:'1.2-2')">
+              </div>
+            </div>
+            <div class="trend-label">{{ trend.month }}</div>
+          </div>
+        </div>
+        <div class="trend-legend">
+          <div class="legend-item">
+            <span class="legend-color income"></span>
+            <span>Income</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color expense"></span>
+            <span>Expenses</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cash Flow -->
+    <div class="analytics-section" *ngIf="cashFlow">
+      <h2>Cash Flow Analysis</h2>
+      <div class="cash-flow-card">
+        <div class="flow-item">
+          <span class="flow-label">Opening Balance:</span>
+          <span class="flow-value">{{ cashFlow.openingBalance | number:'1.2-2' }}</span>
+        </div>
+        <div class="flow-item">
+          <span class="flow-label">Total Inflows:</span>
+          <span class="flow-value positive">+{{ cashFlow.totalInflows | number:'1.2-2' }}</span>
+        </div>
+        <div class="flow-item">
+          <span class="flow-label">Total Outflows:</span>
+          <span class="flow-value negative">-{{ cashFlow.totalOutflows | number:'1.2-2' }}</span>
+        </div>
+        <div class="flow-item total">
+          <span class="flow-label">Closing Balance:</span>
+          <span class="flow-value">{{ cashFlow.closingBalance | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!summary && !isLoading">
+      <div class="empty-icon">📊</div>
+      <h3>No analytics data available</h3>
+      <p>Start adding transactions to see your financial analytics</p>
+    </div>
+  </div>
+</div>

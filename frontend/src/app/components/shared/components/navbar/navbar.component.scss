@@ -1,0 +1,105 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .menu-button {
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      letter-spacing: 0.5px;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .navbar-center {
+    display: none;
+    gap: 8px;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      &.active {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      mat-icon:first-child {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      span {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media (max-width: 768px) {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+// Spacer for fixed navbar
+:host {
+  display: block;
+  margin-bottom: 64px;
+}

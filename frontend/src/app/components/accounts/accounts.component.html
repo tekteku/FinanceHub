@@ -1,0 +1,146 @@
+<div class="accounts-container">
+  <div class="accounts-header">
+    <h1>Accounts</h1>
+    <button class="btn btn-primary" (click)="toggleAddForm()">
+      {{ showAddForm ? 'Cancel' : '+ Add Account' }}
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="account-form-container" *ngIf="showAddForm">
+    <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="account-form">
+      <h2>{{ editingAccountId ? 'Edit Account' : 'New Account' }}</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Account Name *</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="form-control"
+            placeholder="e.g., Main Checking Account"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="type">Account Type *</label>
+          <select id="type" formControlName="type" class="form-control">
+            <option *ngFor="let type of accountTypes" [value]="type">
+              {{ getAccountTypeLabel(type) }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+          rows="3"
+          placeholder="Optional description"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="currency">Currency *</label>
+          <input
+            type="text"
+            id="currency"
+            formControlName="currency"
+            class="form-control"
+            placeholder="USD"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="initialBalance">Initial Balance *</label>
+          <input
+            type="number"
+            id="initialBalance"
+            formControlName="initialBalance"
+            class="form-control"
+            step="0.01"
+            placeholder="0.00"
+          />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="toggleAddForm()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="accountForm.invalid || isLoading">
+          {{ editingAccountId ? 'Update Account' : 'Create Account' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="loading" *ngIf="isLoading && !showAddForm">
+    Loading accounts...
+  </div>
+
+  <div class="accounts-grid" *ngIf="!isLoading">
+    <div class="account-card" *ngFor="let account of accounts" [class.inactive]="!account.isActive">
+      <div class="account-header">
+        <div class="account-icon">{{ getAccountIcon(account.type) }}</div>
+        <div class="account-info">
+          <h3>{{ account.name }}</h3>
+          <span class="account-type">{{ getAccountTypeLabel(account.type) }}</span>
+        </div>
+        <div class="account-actions">
+          <button class="btn-icon" (click)="editAccount(account)" title="Edit">
+            ✏️
+          </button>
+          <button class="btn-icon" (click)="deleteAccount(account.id)" title="Delete">
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <div class="account-description" *ngIf="account.description">
+        {{ account.description }}
+      </div>
+
+      <div class="account-balance">
+        <div class="balance-label">Current Balance</div>
+        <div class="balance-amount" [class.negative]="account.currentBalance < 0">
+          {{ account.currentBalance | number:'1.2-2' }} {{ account.currency }}
+        </div>
+      </div>
+
+      <div class="account-details">
+        <div class="detail-item">
+          <span class="label">Initial Balance:</span>
+          <span class="value">{{ account.initialBalance | number:'1.2-2' }} {{ account.currency }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Transactions:</span>
+          <span class="value">{{ account.totalTransactions }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Status:</span>
+          <span class="value" [class.active]="account.isActive" [class.inactive]="!account.isActive">
+            {{ account.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="accounts.length === 0">
+      <div class="empty-icon">🏦</div>
+      <h3>No accounts yet</h3>
+      <p>Create your first account to start tracking your finances</p>
+      <button class="btn btn-primary" (click)="toggleAddForm()">
+        + Add Your First Account
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,28 +1,254 @@
-<div class="dashboard-container">
-  <div class="welcome-section">
-    <h1>💰 FinanceHub</h1>
-    <h2>Welcome, {{currentUser?.fullName || currentUser?.username}}! 👋</h2>
-    <p>{{currentUser?.email}}</p>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card">
-      <h3>Total Balance</h3>
-      <p class="amount">$0.00</p>
+<div class="dashboard-wrapper">
+  <!-- Hero Header with Gradient -->
+  <div class="hero-header">
+    <div class="hero-background">
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
     </div>
-    <div class="stat-card">
-      <h3>Accounts</h3>
-      <p class="amount">0</p>
-    </div>
-    <div class="stat-card">
-      <h3>Transactions</h3>
-      <p class="amount">0</p>
+    
+    <div class="hero-content">
+      <div class="welcome-badge">👋 Welcome Back</div>
+      <h1 class="hero-title">
+        Hello, <span class="gradient-text">{{ currentUser?.fullName || currentUser?.username || 'User' }}</span>
+      </h1>
+      <p class="hero-subtitle">Here's what's happening with your finances today</p>
     </div>
   </div>
 
-  <div class="quick-actions">
-    <h3>Quick Actions</h3>
-    <button class="btn-primary">+ New Account</button>
-    <button class="btn-secondary">+ New Transaction</button>
+  <div class="dashboard-container">
+    <!-- Main Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">�</div>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Total Balance</div>
+          <div class="stat-value">{{ totalBalance | number:'1.2-2' }} USD</div>
+          <div class="stat-trend positive">
+            <span class="trend-icon">↗</span>
+            <span>+2.5% from last month</span>
+          </div>
+        </div>
+        <div class="stat-glow"></div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">📈</div>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Income This Month</div>
+          <div class="stat-value positive">+{{ totalIncome | number:'1.2-2' }}</div>
+          <div class="stat-trend positive">
+            <span class="trend-icon">↗</span>
+            <span>+8.2% increase</span>
+          </div>
+        </div>
+        <div class="stat-glow"></div>
+      </div>
+
+      <div class="stat-card danger">
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">📉</div>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Expenses This Month</div>
+          <div class="stat-value negative">-{{ totalExpenses | number:'1.2-2' }}</div>
+          <div class="stat-trend negative">
+            <span class="trend-icon">↘</span>
+            <span>-3.1% decrease</span>
+          </div>
+        </div>
+        <div class="stat-glow"></div>
+      </div>
+
+      <div class="stat-card info">
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">💼</div>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Active Accounts</div>
+          <div class="stat-value">{{ accountsCount }}</div>
+          <div class="stat-trend neutral">
+            <span>{{ budgetsCount }} budgets active</span>
+          </div>
+        </div>
+        <div class="stat-glow"></div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+      <h2 class="section-title">
+        <span class="title-icon">⚡</span>
+        Quick Actions
+      </h2>
+      <div class="actions-grid">
+        <button class="action-card" (click)="navigateTo('/accounts')">
+          <div class="action-icon">🏦</div>
+          <div class="action-content">
+            <div class="action-title">Add Account</div>
+            <div class="action-subtitle">Create a new account</div>
+          </div>
+          <div class="action-arrow">→</div>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/transactions')">
+          <div class="action-icon">💸</div>
+          <div class="action-content">
+            <div class="action-title">New Transaction</div>
+            <div class="action-subtitle">Record income or expense</div>
+          </div>
+          <div class="action-arrow">→</div>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/budgets')">
+          <div class="action-icon">📊</div>
+          <div class="action-content">
+            <div class="action-title">Set Budget</div>
+            <div class="action-subtitle">Create spending limit</div>
+          </div>
+          <div class="action-arrow">→</div>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/analytics')">
+          <div class="action-icon">📈</div>
+          <div class="action-content">
+            <div class="action-title">View Analytics</div>
+            <div class="action-subtitle">See detailed reports</div>
+          </div>
+          <div class="action-arrow">→</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Recent Transactions -->
+      <div class="content-card transactions-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="card-icon">💳</span>
+            Recent Transactions
+          </h3>
+          <button class="view-all-btn" (click)="navigateTo('/transactions')">
+            View All →
+          </button>
+        </div>
+        
+        <div class="card-body">
+          <div class="transaction-list" *ngIf="recentTransactions.length > 0">
+            <div class="transaction-item" *ngFor="let transaction of recentTransactions" [class]="getTransactionClass(transaction.type)">
+              <div class="transaction-icon">{{ getTransactionIcon(transaction.type) }}</div>
+              <div class="transaction-details">
+                <div class="transaction-name">{{ transaction.description }}</div>
+                <div class="transaction-date">{{ transaction.transactionDate | date:'short' }}</div>
+              </div>
+              <div class="transaction-amount" [class]="getTransactionClass(transaction.type)">
+                {{ transaction.type === 'INCOME' ? '+' : '-' }}{{ transaction.amount | number:'1.2-2' }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="empty-state" *ngIf="recentTransactions.length === 0">
+            <div class="empty-icon">💸</div>
+            <p>No recent transactions</p>
+            <button class="btn-primary-small" (click)="navigateTo('/transactions')">
+              Add First Transaction
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accounts Overview -->
+      <div class="content-card accounts-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="card-icon">🏦</span>
+            Your Accounts
+          </h3>
+          <button class="view-all-btn" (click)="navigateTo('/accounts')">
+            Manage →
+          </button>
+        </div>
+        
+        <div class="card-body">
+          <div class="accounts-list" *ngIf="accounts.length > 0">
+            <div class="account-item" *ngFor="let account of accounts">
+              <div class="account-info">
+                <div class="account-name">{{ account.name }}</div>
+                <div class="account-type">{{ account.type }}</div>
+              </div>
+              <div class="account-balance" [class.negative]="account.currentBalance < 0">
+                {{ account.currentBalance | number:'1.2-2' }} {{ account.currency }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="empty-state" *ngIf="accounts.length === 0">
+            <div class="empty-icon">🏦</div>
+            <p>No accounts yet</p>
+            <button class="btn-primary-small" (click)="navigateTo('/accounts')">
+              Create Account
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Budgets -->
+      <div class="content-card budgets-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="card-icon">📊</span>
+            Active Budgets
+          </h3>
+          <button class="view-all-btn" (click)="navigateTo('/budgets')">
+            View All →
+          </button>
+        </div>
+        
+        <div class="card-body">
+          <div class="budgets-list" *ngIf="activeBudgets.length > 0">
+            <div class="budget-item" *ngFor="let budget of activeBudgets">
+              <div class="budget-header">
+                <div class="budget-name">{{ budget.name }}</div>
+                <div class="budget-status">{{ getBudgetStatusIcon(budget.status) }}</div>
+              </div>
+              <div class="budget-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" 
+                       [style.width.%]="budget.percentageUsed"
+                       [class.warning]="budget.status === 'WARNING'"
+                       [class.danger]="budget.status === 'OVER_BUDGET'">
+                  </div>
+                </div>
+                <div class="progress-text">
+                  <span>{{ budget.amountSpent | number:'1.0-0' }} / {{ budget.amount | number:'1.0-0' }}</span>
+                  <span class="percentage">{{ budget.percentageUsed | number:'1.0-0' }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="empty-state" *ngIf="activeBudgets.length === 0">
+            <div class="empty-icon">📊</div>
+            <p>No active budgets</p>
+            <button class="btn-primary-small" (click)="navigateTo('/budgets')">
+              Create Budget
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-overlay" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <p>Loading your financial dashboard...</p>
+    </div>
   </div>
 </div>

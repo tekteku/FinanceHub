@@ -2,17 +2,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Account, CreateAccountRequest } from '../models/account.model';
+import { ApiResponse } from '../models/api-response.model';
 
-export interface Account {
-  id: number;
-  accountNumber: string;
-  accountType: string;
-  balance: number;
-  currency: string;
-  status: string;
-  createdAt: string;
-}
-
+/**
+ * Service for managing accounts.
+ * 
+ * @author tekteku
+ * @version 1.0
+ * @since 2025-11-09
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -21,23 +20,31 @@ export class AccountService {
 
   constructor(private http: HttpClient) { }
 
-  getAllAccounts(): Observable<Account[]> {
-    return this.http.get<Account[]>(this.apiUrl);
+  getAllAccounts(): Observable<ApiResponse<Account[]>> {
+    return this.http.get<ApiResponse<Account[]>>(this.apiUrl);
   }
 
-  getAccountById(id: number): Observable<Account> {
-    return this.http.get<Account>(`${this.apiUrl}/${id}`);
+  getActiveAccounts(): Observable<ApiResponse<Account[]>> {
+    return this.http.get<ApiResponse<Account[]>>(`${this.apiUrl}/active`);
   }
 
-  createAccount(account: Partial<Account>): Observable<Account> {
-    return this.http.post<Account>(this.apiUrl, account);
+  getAccountById(id: number): Observable<ApiResponse<Account>> {
+    return this.http.get<ApiResponse<Account>>(`${this.apiUrl}/${id}`);
   }
 
-  updateAccount(id: number, account: Partial<Account>): Observable<Account> {
-    return this.http.put<Account>(`${this.apiUrl}/${id}`, account);
+  createAccount(account: CreateAccountRequest): Observable<ApiResponse<Account>> {
+    return this.http.post<ApiResponse<Account>>(this.apiUrl, account);
   }
 
-  deleteAccount(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  updateAccount(id: number, account: CreateAccountRequest): Observable<ApiResponse<Account>> {
+    return this.http.put<ApiResponse<Account>>(`${this.apiUrl}/${id}`, account);
+  }
+
+  deleteAccount(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
+  }
+
+  getTotalBalance(): Observable<ApiResponse<number>> {
+    return this.http.get<ApiResponse<number>>(`${this.apiUrl}/balance/total`);
   }
 }

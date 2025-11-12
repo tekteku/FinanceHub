@@ -1,0 +1,190 @@
+<div class="transactions-container">
+  <div class="transactions-header">
+    <h1>Transactions</h1>
+    <button class="btn btn-primary" (click)="toggleAddForm()">
+      {{ showAddForm ? 'Cancel' : '+ Add Transaction' }}
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="transaction-form-container" *ngIf="showAddForm">
+    <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
+      <h2>{{ editingTransactionId ? 'Edit Transaction' : 'New Transaction' }}</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="type">Type *</label>
+          <select id="type" formControlName="type" class="form-control">
+            <option *ngFor="let type of transactionTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount *</label>
+          <input
+            type="number"
+            id="amount"
+            formControlName="amount"
+            class="form-control"
+            step="0.01"
+            placeholder="0.00"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <input
+          type="text"
+          id="description"
+          formControlName="description"
+          class="form-control"
+          placeholder="e.g., Grocery shopping"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="accountId">Account *</label>
+          <select id="accountId" formControlName="accountId" class="form-control">
+            <option [value]="null" disabled>Select an account</option>
+            <option *ngFor="let account of accounts" [value]="account.id">
+              {{ account.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryId">Category</label>
+          <select id="categoryId" formControlName="categoryId" class="form-control">
+            <option [value]="null">No category</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="transactionDate">Date *</label>
+        <input
+          type="date"
+          id="transactionDate"
+          formControlName="transactionDate"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="toggleAddForm()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="transactionForm.invalid || isLoading">
+          {{ editingTransactionId ? 'Update Transaction' : 'Create Transaction' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-group">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === null && selectedAccountId === null"
+        (click)="clearFilters()">
+        All
+      </button>
+      <button 
+        class="filter-btn income" 
+        [class.active]="selectedType === transactionTypes[0]"
+        (click)="filterByType(transactionTypes[0])">
+        💰 Income
+      </button>
+      <button 
+        class="filter-btn expense" 
+        [class.active]="selectedType === transactionTypes[1]"
+        (click)="filterByType(transactionTypes[1])">
+        💸 Expense
+      </button>
+      <button 
+        class="filter-btn transfer" 
+        [class.active]="selectedType === transactionTypes[2]"
+        (click)="filterByType(transactionTypes[2])">
+        🔄 Transfer
+      </button>
+    </div>
+
+    <div class="filter-group" *ngIf="accounts.length > 0">
+      <select class="form-control" (change)="onAccountFilterChange($event)">
+        <option [value]="null">All Accounts</option>
+        <option *ngFor="let account of accounts" [value]="account.id">
+          {{ account.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="isLoading && !showAddForm">
+    Loading transactions...
+  </div>
+
+  <div class="transactions-list" *ngIf="!isLoading">
+    <div class="transaction-item" *ngFor="let transaction of transactions" [class]="getTransactionClass(transaction.type)">
+      <div class="transaction-icon">
+        {{ getTransactionIcon(transaction.type) }}
+      </div>
+      
+      <div class="transaction-details">
+        <div class="transaction-description">{{ transaction.description }}</div>
+        <div class="transaction-meta">
+          <span class="account-name" *ngIf="transaction.accountName">
+            🏦 {{ transaction.accountName }}
+          </span>
+          <span class="category-name" *ngIf="transaction.categoryName">
+            📁 {{ transaction.categoryName }}
+          </span>
+          <span class="transaction-date">
+            📅 {{ transaction.transactionDate | date:'short' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="transaction-amount" [class]="getTransactionClass(transaction.type)">
+        {{ transaction.type === 'INCOME' ? '+' : '-' }}{{ transaction.amount | number:'1.2-2' }}
+      </div>
+
+      <div class="transaction-actions">
+        <button class="btn-icon" (click)="editTransaction(transaction)" title="Edit">
+          ✏️
+        </button>
+        <button class="btn-icon" (click)="deleteTransaction(transaction.id)" title="Delete">
+          🗑️
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="transactions.length === 0">
+      <div class="empty-icon">💳</div>
+      <h3>No transactions yet</h3>
+      <p>Start tracking your expenses and income</p>
+      <button class="btn btn-primary" (click)="toggleAddForm()">
+        + Add Your First Transaction
+      </button>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="transactions.length > 0 && totalPages > 1">
+    <button class="btn" (click)="previousPage()" [disabled]="currentPage === 0">
+      ← Previous
+    </button>
+    <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+    <button class="btn" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+      Next →
+    </button>
+  </div>
+</div>
