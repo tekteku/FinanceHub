@@ -60,7 +60,22 @@
           <div class="stat-value negative">-{{ totalExpenses | number:'1.2-2' }}</div>
           <div class="stat-trend negative">
             <span class="trend-icon">↘</span>
-            <span>-3.1% decrease</span>
+            <span>-1.2% decrease</span>
+          </div>
+        </div>
+        <div class="stat-glow"></div>
+      </div>
+
+      <div class="stat-card info">
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">🚀</div>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Total Invested</div>
+          <div class="stat-value text-blue-600">{{ totalInvested | number:'1.2-2' }}</div>
+          <div class="stat-trend positive">
+            <span class="trend-icon">↗</span>
+            <span>Portfolio Value</span>
           </div>
         </div>
         <div class="stat-glow"></div>

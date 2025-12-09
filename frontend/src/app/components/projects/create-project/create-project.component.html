@@ -1,0 +1,38 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Submit a Project Idea</h2>
+      
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-4">
+          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Project Title</label>
+          <input type="text" id="title" [(ngModel)]="project.title" name="title" required
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+
+        <div class="mb-4">
+          <label for="targetAmount" class="block text-sm font-medium text-gray-700 mb-1">Target Amount ($)</label>
+          <input type="number" id="targetAmount" [(ngModel)]="project.targetAmount" name="targetAmount" required min="1"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+
+        <div class="mb-6">
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea id="description" [(ngModel)]="project.description" name="description" required rows="6"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+          <p class="text-sm text-gray-500 mt-1">Describe your project, its goals, and why people should invest.</p>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+          <button type="button" routerLink="/projects" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" [disabled]="!project.title || !project.targetAmount || !project.description"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
+            Submit Project
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -20,6 +20,8 @@ export class SidenavComponent {
     { icon: '💸', label: 'Transactions', route: '/transactions', badge: null },
     { icon: '📈', label: 'Budgets', route: '/budgets', badge: '3' },
     { icon: '📉', label: 'Analytics', route: '/analytics', badge: null },
+    { icon: '🚀', label: 'Projects', route: '/projects', badge: 'New' },
+    { icon: '💼', label: 'My Investments', route: '/my-investments', badge: null },
   ];
 
   constructor(

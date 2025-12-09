@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { AccountService } from '../../services/account.service';
 import { TransactionService } from '../../services/transaction.service';
 import { BudgetService } from '../../services/budget.service';
+import { InvestmentService } from '../../services/investment.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +22,7 @@ export class DashboardComponent implements OnInit {
   totalBalance = 0;
   totalIncome = 0;
   totalExpenses = 0;
+  totalInvested = 0;
   accountsCount = 0;
   transactionsCount = 0;
   budgetsCount = 0;
@@ -38,8 +40,9 @@ export class DashboardComponent implements OnInit {
     private accountService: AccountService,
     private transactionService: TransactionService,
     private budgetService: BudgetService,
+    private investmentService: InvestmentService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
@@ -99,6 +102,15 @@ export class DashboardComponent implements OnInit {
         console.error('Error loading expenses:', err);
         this.isLoading = false;
       }
+    });
+
+    this.loadInvestmentStats();
+  }
+
+  loadInvestmentStats(): void {
+    this.investmentService.getTotalInvested().subscribe({
+      next: (amount) => this.totalInvested = amount || 0,
+      error: (err) => console.error('Error loading investment stats', err)
     });
   }
 
