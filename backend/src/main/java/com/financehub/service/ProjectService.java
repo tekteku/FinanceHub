@@ -33,6 +33,18 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProjectDTO> getTrendingProjects() {
+        return projectRepository.findTrendingProjects().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectDTO> searchProjects(String keyword) {
+        return projectRepository.searchProjects(keyword).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     public ProjectDTO createProject(ProjectDTO projectDTO, Long userId) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -67,4 +79,5 @@ public class ProjectService {
         dto.setCreatedAt(project.getCreatedAt());
         return dto;
     }
+}
 }

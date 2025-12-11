@@ -7,6 +7,8 @@ import { ProjectListComponent } from './components/projects/project-list/project
 import { CreateProjectComponent } from './components/projects/create-project/create-project.component';
 import { ProjectDetailComponent } from './components/projects/project-detail/project-detail.component';
 import { MyInvestmentsComponent } from './components/projects/my-investments/my-investments.component';
+import { NotificationsListComponent } from './components/notifications/notifications-list/notifications-list.component';
+import { InvestorProfileComponent } from './components/investor/investor-profile/investor-profile.component';
 import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -17,6 +19,8 @@ const routes: Routes = [
   { path: 'projects/create', component: CreateProjectComponent, canActivate: [authGuard] },
   { path: 'projects/:id', component: ProjectDetailComponent, canActivate: [authGuard] },
   { path: 'my-investments', component: MyInvestmentsComponent, canActivate: [authGuard] },
+  { path: 'notifications', component: NotificationsListComponent, canActivate: [authGuard] },
+  { path: 'profile', component: InvestorProfileComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '/login' }
 ];
 

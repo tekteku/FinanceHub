@@ -24,6 +24,16 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getAllActiveProjects());
     }
 
+    @GetMapping("/trending")
+    public ResponseEntity<List<ProjectDTO>> getTrendingProjects() {
+        return ResponseEntity.ok(projectService.getTrendingProjects());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProjectDTO>> searchProjects(@RequestParam String keyword) {
+        return ResponseEntity.ok(projectService.searchProjects(keyword));
+    }
+
     @GetMapping("/my-projects")
     public ResponseEntity<List<ProjectDTO>> getMyProjects(Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());

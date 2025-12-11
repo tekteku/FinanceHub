@@ -7,11 +7,12 @@ import { Account } from '../../../models/account.model';
 import { ProjectService } from '../../../services/project.service';
 import { InvestmentService } from '../../../services/investment.service';
 import { AccountService } from '../../../services/account.service';
+import { ProjectReviewsComponent } from '../project-reviews/project-reviews.component';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ProjectReviewsComponent],
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.scss']
 })

@@ -1,0 +1,36 @@
+<div class="notifications-dropdown">
+  <div class="max-w-md bg-white rounded-lg shadow-lg">
+    <div class="p-4 border-b border-gray-200">
+      <h3 class="font-semibold text-gray-900">Notifications</h3>
+    </div>
+    
+    <div class="max-h-96 overflow-y-auto">
+      <div *ngIf="(unreadNotifications$ | async) as notifications; else empty">
+        <div *ngFor="let notification of notifications" 
+             class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+             (click)="markAsRead(notification.id!)">
+          <div class="flex gap-3">
+            <div class="text-xl">{{ getIcon(notification.type) }}</div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-sm text-gray-900">{{ notification.title }}</h4>
+              <p class="text-sm text-gray-600">{{ notification.message }}</p>
+              <span class="text-xs text-gray-500">{{ notification.createdAt | date:'short' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <ng-template #empty>
+        <div class="p-4 text-center text-gray-500">
+          No notifications
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="p-4 border-t border-gray-200 text-center">
+      <a href="/notifications" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+        View All Notifications
+      </a>
+    </div>
+  </div>
+</div>

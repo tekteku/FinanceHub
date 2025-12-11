@@ -13,12 +13,16 @@ import { ProjectService } from '../../../services/project.service';
 })
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
+  trendingProjects: Project[] = [];
+  searchKeyword: string = '';
   loading = true;
+  showTrending = true;
 
   constructor(private projectService: ProjectService) { }
 
   ngOnInit(): void {
     this.loadProjects();
+    this.loadTrendingProjects();
   }
 
   loadProjects(): void {
@@ -32,5 +36,33 @@ export class ProjectListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  loadTrendingProjects(): void {
+    this.projectService.getTrendingProjects().subscribe({
+      next: (data) => {
+        this.trendingProjects = data;
+      },
+      error: (error) => {
+        console.error('Error loading trending projects', error);
+      }
+    });
+  }
+
+  searchProjects(): void {
+    if (this.searchKeyword.trim()) {
+      this.projectService.searchProjects(this.searchKeyword).subscribe({
+        next: (data) => {
+          this.projects = data;
+          this.showTrending = false;
+        },
+        error: (error) => {
+          console.error('Error searching projects', error);
+        }
+      });
+    } else {
+      this.loadProjects();
+      this.showTrending = true;
+    }
   }
 }

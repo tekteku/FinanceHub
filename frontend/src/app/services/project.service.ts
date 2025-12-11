@@ -27,4 +27,12 @@ export class ProjectService {
   getProjectById(id: number): Observable<Project> {
     return this.http.get<Project>(`${this.apiUrl}/${id}`);
   }
+
+  getTrendingProjects(): Observable<Project[]> {
+    return this.http.get<Project[]>(`${this.apiUrl}/trending`);
+  }
+
+  searchProjects(keyword: string): Observable<Project[]> {
+    return this.http.get<Project[]>(`${this.apiUrl}/search`, { params: { keyword } });
+  }
 }

@@ -1,0 +1,53 @@
+<div class="container mx-auto px-4 py-8">
+  <div *ngIf="(profile$ | async) as profile" class="max-w-4xl mx-auto">
+    <!-- Profile Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg shadow-lg p-8 mb-6">
+      <div class="flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">{{ profile.fullName }}</h1>
+          <p class="text-blue-100">@{{ profile.username }}</p>
+          <p class="text-blue-100 mt-1">{{ profile.email }}</p>
+        </div>
+        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-3xl">
+          {{ profile.fullName?.charAt(0) || 'I' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="text-sm font-medium text-gray-600 mb-2">Total Invested</div>
+        <div class="text-3xl font-bold text-green-600">${{ profile.totalInvested | number:'1.2-2' }}</div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="text-sm font-medium text-gray-600 mb-2">Projects Invested</div>
+        <div class="text-3xl font-bold text-blue-600">{{ profile.projectsInvested }}</div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="text-sm font-medium text-gray-600 mb-2">Reviews Given</div>
+        <div class="text-3xl font-bold text-purple-600">{{ profile.totalReviews }}</div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="text-sm font-medium text-gray-600 mb-2">Average Rating</div>
+        <div class="text-3xl font-bold text-yellow-500">
+          {{ profile.averageRating ? (profile.averageRating | number:'1.1-1') : 'N/A' }}
+          <span class="text-xl">⭐</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member Since -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="text-sm text-gray-600">Member Since</div>
+      <div class="text-lg font-semibold text-gray-900 mt-1">{{ profile.createdAt | date:'longDate' }}</div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="text-gray-500">Loading profile...</div>
+  </div>
+</div>
